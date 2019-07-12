@@ -1,0 +1,49 @@
+server:
+  port: 9201 #\u7aef\u53e3
+  connection-timeout: 5000  #\u8d85\u65f6\u65f6\u95f4
+  tomcat: 
+    min-spare-threads: 20   #\u521d\u59cb\u7ebf\u7a0b
+    max-threads: 1000        #\u6700\u5927\u7ebf\u7a0b
+spring:
+  mvc: 
+    throw-exception-if-no-handler-found: true  #\u51fa\u73b0\u9519\u8bef\u65f6, \u76f4\u63a5\u629b\u51fa\u5f02\u5e38
+  messages:
+    basename:  i18n/messages
+    encoding: UTF-8
+  application:
+    name:  chat
+  datasource:
+    name: db
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/chat?useSSL=false&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: MySql123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    minIdle: 5
+    maxActive: 100
+    initialSize: 10
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 50
+    removeAbandoned: true
+    filters: stat  
+  redis:
+    database: 0 # Redis\u6570\u636e\u5e93\u7d22\u5f15\uff08\u9ed8\u8ba4\u4e3a0\uff09
+    host: 127.0.0.1
+    port: 6379
+    password: reDis123
+    timeout: 5000  # \u8fde\u63a5\u8d85\u65f6\u65f6\u95f4\uff08\u6beb\u79d2\uff09
+mybatis:
+  mapperLocations: classpath:/mappings/*/*.xml
+  typeAliasesPackage: com.chat.*.dao    
+  configLocation: classpath:/mybatis-config.xml
+logging:  
+  level: 
+    com.codingapi: error
+    com.chat: info 

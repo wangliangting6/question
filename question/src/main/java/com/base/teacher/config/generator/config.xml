@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+   
+	<params>
+		<!-- Java总路径  生成java文件包的目录 -->
+		<osdir       value="E:\works\stsWorkSpace\question\src\main\java\com\base\teacher"></osdir>
+		<!-- xml总路径 -->
+		<xmlosdir    value="E:\works\stsWorkSpace\question\src\main\resources"></xmlosdir>
+		<!-- 总包名 -->
+		<javapackage value="com.base.teacher"></javapackage>
+		<!-- 模块名称 -->
+		<project     value="questionnaire"></project><!-- 模块名称 -->
+	</params>
+	<tables>
+ 	      <table       value="t_questionnaire_answer"   genType="1,2" ></table>
+	</tables>
+	
+    <dataSource>
+		<driver      value="com.mysql.cj.jdbc.Driver"></driver>
+		<url         value="jdbc:mysql://120.78.136.100:3306/chat?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf-8"></url>
+		<username    value="root"></username>
+		<password    value="MySql123"></password>
+	</dataSource>
+	<author>
+		<name  		 value="youkehai" ></name>
+		<email  	 value="717407966@qq.com" ></email>
+	</author>
+</config>

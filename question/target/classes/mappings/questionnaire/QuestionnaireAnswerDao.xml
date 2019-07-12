@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QuestionnaireAnswerDao">
+<!-- 
+	创建人：youkehai
+	邮箱：717407966@qq.com
+	创建时间：2019-7-9 10:00:35
+	版本号：1.0	
+-->
+<!-- *******************************************自定义方法区  不替换的区域【other_start】***************************************** -->	
+ <select id="selectAnswer" resultType="com.base.teacher.questionnaire.entity.QuestionnaireAnswer" parameterType="com.base.teacher.questionnaire.entity.QuestionnaireAnswer">
+ select tqa.answer,count(tqa.id) as count,tqq.type from t_questionnaire_question tqq LEFT JOIN t_questionnaire_answer tqa on tqq.id=tqa.questio_id 
+  where tqq.id=#{questionId} GROUP BY tqa.answer
+ </select>
+ 
+
+<!-- *******************************************自定义方法区 【other_end】***************************************** -->	
+<!-- *******************************************公用方法区(不可修改)***************************************** -->	
+	<!-- 公用返回值 与数据库字段保持一致即可，同时实体(驼峰命名)必须包含所有字段 -->
+	<sql id="base_column" >
+		 id,questionnaire_id,questio_id,answer,create_date,type
+	</sql>
+	<!--  方法返回：成功条数。     方法名称： 新增          方法参数：list集合 -->
+    <insert id="insert" parameterType="java.util.List">
+        insert into t_questionnaire_answer ( <include refid="base_column" /> ) values
+        <foreach collection="list" item="t" index="index" separator=",">
+          (  #{t.id,jdbcType=VARCHAR},#{t.questionnaireId,jdbcType=VARCHAR},#{t.questioId,jdbcType=VARCHAR},#{t.answer,jdbcType=VARCHAR},#{t.createDate,jdbcType=TIMESTAMP},#{t.type,jdbcType=VARCHAR}  )
+        </foreach>
+    </insert>
+    <!-- 
+		方法返回：成功条数。
+		方法名称： 按list更新
+		方法参数：list集合，id不为空，其他字段为空也修改，使用场景一般先查询  或更改明细的几个字段
+	-->   
+    <update id="updateList" parameterType="java.util.List">  
+	    <foreach collection="list" item="t" index="index" separator=";">   
+	    	 update t_questionnaire_answer
+			     <set>
+		    		id = #{t.id,jdbcType=VARCHAR},
+		    		questionnaire_id = #{t.questionnaireId,jdbcType=VARCHAR},
+		    		questio_id = #{t.questioId,jdbcType=VARCHAR},
+		    		answer = #{t.answer,jdbcType=VARCHAR},
+		    		create_date = #{t.createDate,jdbcType=TIMESTAMP},
+		    		type = #{t.type,jdbcType=VARCHAR},
+			    </set>
+			    where id = #{t.id,jdbcType=BIGINT}
+			   
+	    </foreach>  
+	</update>
+    
+	<!-- 
+		方法名称： 按条件更新
+		方法参数：条件构造器（构造器中T对象所有不为空属性为修改后的值）。
+		方法返回：成功条数。
+	-->   
+    <update id="update" parameterType="queryCondition">  
+	   	update t_questionnaire_answer
+	    <set>
+		  	<if test="t.id != null">
+    		id = #{t.id,jdbcType=VARCHAR},
+    		</if>
+		  	<if test="t.questionnaireId != null">
+    		questionnaire_id = #{t.questionnaireId,jdbcType=VARCHAR},
+    		</if>
+		  	<if test="t.questioId != null">
+    		questio_id = #{t.questioId,jdbcType=VARCHAR},
+    		</if>
+		  	<if test="t.answer != null">
+    		answer = #{t.answer,jdbcType=VARCHAR},
+    		</if>
+		  	<if test="t.createDate != null">
+    		create_date = #{t.createDate,jdbcType=TIMESTAMP},
+    		</if>
+		  	<if test="t.type != null">
+    		type = #{t.type,jdbcType=VARCHAR},
+    		</if>
+	    </set>
+	    <include refid="common.whereClause" ></include>
+	</update>
+    
+	<!-- 
+		方法名称： 按条件删除
+		方法参数：条件构造器。
+		方法返回：成功条数。
+	-->   
+    <delete id="delete" parameterType="queryCondition">
+    	delete from t_questionnaire_answer
+    	<include refid="common.whereClause"></include>
+    </delete>
+    
+    <!-- 
+		方法名称： 按条件查询
+		方法参数：条件构造器(可分组和排序)。
+		方法返回：返回单个对象或集合。
+	-->
+    <select id="select" resultType="com.base.teacher.questionnaire.entity.QuestionnaireAnswer" parameterType="queryCondition">
+        select <include refid="base_column" /> from t_questionnaire_answer
+        <include refid="common.whereClause"></include>
+        <if test="groupByClause != null">
+	        group by ${groupByClause}
+        </if>
+        <if test="orderByClause != null">
+	        order by ${orderByClause}
+        </if>
+    </select>
+</mapper>
+
+<!-- /******************************************************************************
+ * Copyright (C) 2018 
+ * All Rights Reserved.
+ ***************************************************************************** -->
+

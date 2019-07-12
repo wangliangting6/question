@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+	<!-- 查询条件构造器
+		用途：主要用于直接从控制器(web)和mybatis配置文件(xxx.xml) 直接进行通用查询
+		作者：shenzhixiong 
+		邮箱：731139982@qq.com
+		 -->
+	<sql id="whereClause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<if test="oredCriteria.size>1"> (</if>
+					<trim prefix=" " suffix=" " prefixOverrides="and">
+						<if test="criteria.criteriaWithoutValue!=null and criteria.criteriaWithoutValue.size()>0">
+							and
+							<foreach item="criteriaWithoutValue" index="cwv"
+								collection="criteria.criteriaWithoutValue" separator="and">
+								${criteriaWithoutValue}
+							</foreach>
+						</if>
+						<if test="criteria.criteriaWithSingleValue!=null and criteria.criteriaWithSingleValue.size()>0">
+							and
+							<foreach item="criteriaWithSingleValue" index="cwsv"
+								collection="criteria.criteriaWithSingleValue" separator="and">
+								${criteriaWithSingleValue.condition}#{criteriaWithSingleValue.value}
+							</foreach>
+						</if>
+						<if test="criteria.criteriaWithListValue!=null and criteria.criteriaWithListValue.size()>0">
+							and
+							<foreach item="criteriaWithListValue" index="cwlv"
+								collection="criteria.criteriaWithListValue" separator="and">
+								${criteriaWithListValue.condition}
+								<foreach item="value" index="vs"
+									collection="criteriaWithListValue.value" open="(" close=")"
+									separator=",">
+									#{value}
+								</foreach>
+							</foreach>
+						</if>
+						<if test="criteria.criteriaWithBetweenValue!=null and criteria.criteriaWithBetweenValue.size()>0">
+							and
+							<foreach item="criteriaWithBetweenValue" index="cwbv"
+								collection="criteria.criteriaWithBetweenValue" separator="and">
+								${criteriaWithBetweenValue.condition}
+								#{criteriaWithBetweenValue.value[0]} and
+								#{criteriaWithBetweenValue.value[1]}
+							</foreach>
+						</if>
+					</trim>
+					<if test="oredCriteria.size>1">) </if>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="andClause">
+		<if test="oredCriteria and oredCriteria[0] and oredCriteria[0].valid">
+			and
+		</if>
+		<foreach collection="oredCriteria" item="criteria" separator="or">
+			<if test="criteria.valid">
+				<if test="oredCriteria.size>1"> ( </if>
+				<trim prefix="" suffix="" prefixOverrides="and">
+					<if test="criteria.criteriaWithoutValue!=null and criteria.criteriaWithoutValue.size()>0">
+						and
+						<foreach item="criteriaWithoutValue" index="cwv"
+							collection="criteria.criteriaWithoutValue" separator="and">
+							${criteria.criteriaWithoutValue[cwv]}
+						</foreach>
+					</if>
+					<if test="criteria.criteriaWithSingleValue!=null and criteria.criteriaWithSingleValue.size()>0">
+						and
+						<foreach item="criteriaWithSingleValue" index="cwsv"
+							collection="criteria.criteriaWithSingleValue" separator="and">
+							${criteria.criteriaWithSingleValue[cwsv].condition}
+							"${criteria.criteriaWithSingleValue[cwsv].value}"
+						</foreach>
+					</if>
+					<if test="criteria.criteriaWithListValue!=null and criteria.criteriaWithListValue.size()>0">
+						and
+						<foreach item="criteriaWithListValue" index="cwlv"
+							collection="criteria.criteriaWithListValue" separator="and">
+							${criteria.criteriaWithListValue[cwlv].condition}
+							<foreach item="value" index="vs"
+								collection="criteria.criteriaWithListValue[cwlv].value" open="("
+								close=")" separator=",">
+								"${criteria.criteriaWithListValue[cwlv].value[vs]}"
+							</foreach>
+						</foreach>
+					</if>
+					<if test="criteria.criteriaWithBetweenValue!=null and criteria.criteriaWithBetweenValue.size()>0">
+						and
+						<foreach item="criteriaWithBetweenValue" index="cwbv"
+							collection="criteria.criteriaWithBetweenValue" separator="and">
+							${criteria.criteriaWithBetweenValue[cwbv].condition}
+							"${criteria.criteriaWithBetweenValue[cwbv].value[0]}" and
+							"${criteria.criteriaWithBetweenValue[cwbv].value[1]}"
+						</foreach>
+					</if>
+				</trim>
+				<if test="oredCriteria.size>1"> ) </if>
+			</if>
+		</foreach>
+	</sql>
+</mapper>
